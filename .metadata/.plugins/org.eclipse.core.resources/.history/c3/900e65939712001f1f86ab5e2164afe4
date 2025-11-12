@@ -1,0 +1,37 @@
+package Shop;
+
+import java.util.List;
+
+public class Admin extends User {
+
+    private StockManager stockManager;
+
+    public Admin(String userId, String username, String name, Address address, String role) {
+        super(userId, username, name, address, role);
+        this.stockManager = StockManager.getInstance();
+    }
+
+    @Override
+    public void displayOptions() {
+        System.out.println("Admin Options:");
+        System.out.println("1. View Products");
+        System.out.println("2. Add Product");
+    }
+
+    public void viewProducts() {
+        List<Product> products = stockManager.getStock();
+        products.sort((p1, p2) -> Double.compare(p1.getRetailPrice(), p2.getRetailPrice()));
+        for (Product p : products) {
+            System.out.println(p);
+        }
+    }
+
+    public void addProduct(Product product) {
+        try {
+            stockManager.addProduct(product);
+            System.out.println("Product added successfully.");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}

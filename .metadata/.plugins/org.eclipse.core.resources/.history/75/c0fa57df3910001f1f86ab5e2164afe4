@@ -1,0 +1,28 @@
+package Shop;
+public class Address {
+    // Attributes
+    private String houseNumber;
+    private String postcode;
+    private String city;
+    
+    // Constructor
+    public Address(String houseNumber, String postcode, String city) {
+        this.houseNumber = houseNumber;
+        this.postcode = postcode;
+        this.city = city;
+    }
+    
+    // Getter methods
+    public String getHouseNumber() {
+        return houseNumber;
+    }
+    
+    public String getPostcode() {
+        return postcode;
+    }
+    
+    public String getCity() {
+        return city;
+    }
+}
+

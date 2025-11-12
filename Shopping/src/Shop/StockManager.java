@@ -1,0 +1,100 @@
+package Shop;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+public class StockManager {
+    private List<Product> stock;
+    private static StockManager instance;
+
+    private StockManager() {
+        loadProducts();
+    }
+
+    public static StockManager getInstance() {
+        if (instance == null) {
+            instance = new StockManager();
+        }
+        return instance;
+    }
+
+    public void loadProducts() {
+        stock = FileManager.readStock("Stock.txt");
+    }
+
+    public void saveProducts() {
+        FileManager.writeStock(stock, "Stock.txt");
+    }
+
+    public List<Product> getStock() {
+        return stock;
+    }
+
+    public int getStockQuantity(Product product) {
+        return stock.stream()
+                    .filter(p -> p.getBarcode() == product.getBarcode())
+                    .findFirst()
+                    .map(Product::getQuantityInStock)
+                    .orElse(0);
+    }
+
+    public boolean isAvailable(int barcode, int quantity) {
+        return stock.stream()
+                    .anyMatch(p -> p.getBarcode() == barcode && p.getQuantityInStock() >= quantity);
+    }
+
+    public void updateStock(Map<Product, Integer> basketItems) {
+        for (Map.Entry<Product, Integer> entry : basketItems.entrySet()) {
+            Product basketProduct = entry.getKey();
+            int quantityToReduce = entry.getValue();
+
+            Optional<Product> stockProduct = stock.stream()
+                                                  .filter(p -> p.getBarcode() == basketProduct.getBarcode())
+                                                  .findFirst();
+
+            if (stockProduct.isPresent()) {
+                Product product = stockProduct.get();
+                int newQuantity = product.getQuantityInStock() - quantityToReduce;
+                if (newQuantity >= 0) {
+                    product.setQuantityInStock(newQuantity);
+                } else {
+                    System.out.println("Insufficient stock for product: " + product.getBrand());
+                }
+            } else {
+                System.out.println("Product not found in stock: " + basketProduct.getBrand());
+            }
+        }
+        saveProducts();
+    }
+
+    public void reduceStock(Product product, int quantity) {
+        Optional<Product> stockProduct = stock.stream()
+                                              .filter(p -> p.getBarcode() == product.getBarcode())
+                                              .findFirst();
+        stockProduct.ifPresent(p -> p.setQuantityInStock(p.getQuantityInStock() - quantity));
+        saveProducts();
+    }
+
+    public void increaseStock(Product product, int quantity) {
+        Optional<Product> stockProduct = stock.stream()
+                                              .filter(p -> p.getBarcode() == product.getBarcode())
+                                              .findFirst();
+        stockProduct.ifPresent(p -> p.setQuantityInStock(p.getQuantityInStock() + quantity));
+        saveProducts();
+    }
+
+    public void addProduct(Product product) {
+        boolean exists = stock.stream()
+                              .anyMatch(p -> p.getBarcode() == product.getBarcode());
+
+        if (exists) {
+            System.out.println("Product with this barcode already exists.");
+        } else {
+            stock.add(product);
+            saveProducts();
+            System.out.println("Product added to stock.");
+        }
+    }
+}

@@ -1,0 +1,26 @@
+package Shop;
+
+public class Keyboard extends Product {
+    private Layout layout;
+
+    public Keyboard(int barcode, String brand, String color, ConnectivityType connectivity,
+                    int quantityInStock, double originalCost, double retailPrice, ProductCategory category, Layout layout) {
+        super(barcode, brand, color, connectivity, quantityInStock, originalCost, retailPrice, category);
+        this.layout = layout;
+    }
+
+    @Override
+    public String displayWithoutCost() {
+        return String.format("Keyboard - Barcode: %d, Layout: %s, Brand: %s, Color: %s, Connectivity: %s, Retail Price: %.2f",
+                getBarcode(), layout, getBrand(), getColor(), getConnectivity(), getRetailPrice());
+    }
+
+    // Getters and setters
+    public Layout getLayout() {
+        return layout;
+    }
+
+    public void setLayout(Layout layout) {
+        this.layout = layout;
+    }
+}

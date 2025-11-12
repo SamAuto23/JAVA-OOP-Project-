@@ -1,0 +1,94 @@
+package Shop;
+import java.io.*;
+
+public abstract class Product {
+    private int barcode;
+    private String brand;
+    private String color;
+    private ConnectivityType connectivity;
+    private int quantityInStock;
+    private double originalCost;
+    private double retailPrice;
+    private ProductCategory category;
+
+    public Product(int barcode, String brand, String color, ConnectivityType connectivity, int quantityInStock, double originalCost, double retailPrice, ProductCategory category) {
+        this.barcode = barcode;
+        this.brand = brand;
+        this.color = color;
+        this.connectivity = connectivity;
+        this.quantityInStock = quantityInStock;
+        this.originalCost = originalCost;
+        this.retailPrice = retailPrice;
+        this.category = category;
+    }
+
+    // Getters and Setters
+    public int getBarcode() {
+        return barcode;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public ConnectivityType getConnectivity() {
+        return connectivity;
+    }
+
+    public int getQuantityInStock() {
+        return quantityInStock;
+    }
+
+    public void setQuantityInStock(int quantityInStock) {
+        this.quantityInStock = quantityInStock;
+    }
+
+    public double getOriginalCost() {
+        return originalCost;
+    }
+
+    public double getRetailPrice() {
+        return retailPrice;
+    }
+
+    public ProductCategory getCategory() {
+        return category;
+    }
+
+    // Abstract method to be implemented by subclasses
+    public abstract String displayWithoutCost();
+
+    public static Product fromString(String line) throws IllegalArgumentException {
+        // Parse the string assuming a specific format
+        String[] parts = line.split(", ");
+        try {
+            int barcode = Integer.parseInt(parts[0]);
+            ProductCategory category = ProductCategory.valueOf(parts[1].toUpperCase());
+            String type = parts[2].trim();
+            String brand = parts[3];
+            String color = parts[4];
+            ConnectivityType connectivity = ConnectivityType.valueOf(parts[5].toUpperCase());
+            int quantity = Integer.parseInt(parts[6]);
+            double originalCost = Double.parseDouble(parts[7]);
+            double retailPrice = Double.parseDouble(parts[8]);
+            String additionalInfo = parts[9];  // Assumed to be either layout or number of buttons
+
+            if (type.equalsIgnoreCase("keyboard")) {
+                Layout layout = Layout.valueOf(additionalInfo.toUpperCase());
+                return new Keyboard(barcode, brand, color, connectivity, quantity, originalCost, retailPrice, category, layout);
+            } else if (type.equalsIgnoreCase("mouse")) {
+                int buttons = Integer.parseInt(additionalInfo);
+                return new Mouse(barcode, brand, color, connectivity, quantity, originalCost, retailPrice, category, buttons, MouseType.STANDARD); // Assuming MouseType
+            } else {
+                throw new IllegalArgumentException("Invalid product type");
+            }
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            throw new IllegalArgumentException("Error parsing product details", e);
+        }
+    }
+
+}

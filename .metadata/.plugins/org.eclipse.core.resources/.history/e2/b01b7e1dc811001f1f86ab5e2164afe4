@@ -1,0 +1,95 @@
+package Shop;  
+
+
+public class Product {
+    private int barcode;
+    private String brand;
+    private String color;
+    private ConnectivityType connectivity;
+    private int quantityInStock;
+    private double originalCost;
+    private double retailPrice;
+    private ProductCategory category;
+
+    // Existing constructor
+    public Product(int barcode, String brand, String color, ConnectivityType connectivity, int quantityInStock, double originalCost, double retailPrice, ProductCategory category) {
+        this.barcode = barcode;
+        this.brand = brand;
+        this.color = color;
+        this.connectivity = connectivity;
+        this.quantityInStock = quantityInStock;
+        this.originalCost = originalCost;
+        this.retailPrice = retailPrice;
+        this.category = category;
+    }
+
+    // Add the fromString method
+    public static Product fromString(String details) {
+        try {
+            String[] parts = details.split(", ");
+            int barcode = Integer.parseInt(parts[0].trim());
+            String brand = parts[1].trim();
+            String color = parts[2].trim();
+            
+            // Use the enum's built-in valueOf method directly
+            ConnectivityType connectivity = ConnectivityType.valueOf(parts[3].trim().toUpperCase());
+            int quantityInStock = Integer.parseInt(parts[4].trim());
+            double originalCost = Double.parseDouble(parts[5].trim());
+            double retailPrice = Double.parseDouble(parts[6].trim());
+            
+            // Use the enum's built-in valueOf method directly
+            ProductCategory category = ProductCategory.valueOf(parts[7].trim().toUpperCase());
+
+            return new Product(barcode, brand, color, connectivity, quantityInStock, originalCost, retailPrice, category);
+        } catch (Exception e) {
+            System.err.println("Error parsing product details: " + e.getMessage());
+            return null;
+        }
+    }
+
+
+    // Other methods and properties
+
+
+    public int getBarcode() {
+        return barcode;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public ConnectivityType getConnectivity() {
+        return connectivity;
+    }
+
+    public int getQuantityInStock() {
+        return this.quantityInStock;
+    }
+
+    public void setQuantityInStock(int quantityInStock) {
+        this.quantityInStock = quantityInStock;
+    }
+
+    public double getOriginalCost() {
+        return originalCost;
+    }
+
+    public double getRetailPrice() {
+        return retailPrice;
+    }
+
+    public ProductCategory getCategory() {
+        return category;
+    }
+
+    @Override
+    public String toString() {
+        // Return string representation of the product
+    }
+
+}

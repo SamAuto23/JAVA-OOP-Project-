@@ -1,0 +1,34 @@
+package Shop;
+public class Keyboard extends Product {
+    // Additional attribute for keyboards
+    private KeyboardType type;
+    private Layout layout;
+    
+    // Constructor for keyboards
+    public Keyboard(String barcode, String category, String deviceType, String brand, String color,
+                    String connectivity, int quantityInStock, double originalCost, double retailPrice,
+                    String additionalInformation, Layout layout, KeyboardType type) {
+        super(barcode, category, deviceType, brand, color, connectivity, quantityInStock,
+              originalCost, retailPrice, additionalInformation);
+        this.layout = layout;
+        this.type = type;
+    }
+    
+    // Getter and setter for type
+    public KeyboardType getType() {
+        return type;
+    }
+    
+    public void setType(KeyboardType type) {
+        this.type = type;
+    }
+    
+    // Getter and setter for layout
+    public Layout getLayout() {
+        return layout;
+    }
+    
+    public void setLayout(Layout layout) {
+        this.layout = layout;
+    }
+}

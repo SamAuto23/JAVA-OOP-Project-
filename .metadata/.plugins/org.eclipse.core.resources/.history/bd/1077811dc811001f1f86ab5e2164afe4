@@ -1,0 +1,60 @@
+package Shop;
+import java.util.*;
+import java.io.*;
+
+public class Customer extends User {
+    private ShoppingBasket basket;
+
+    public Customer(String userId, String username, String name, Address address, String role) {
+        super(userId, username, name, address, role);
+        this.basket = new ShoppingBasket(); // Initialize the ShoppingBasket object
+    }
+
+    @Override
+    public void displayOptions() {
+        System.out.println("Customer Options:");
+        System.out.println("1. View Products");
+        System.out.println("2. Add to Basket");
+        System.out.println("3. View Basket");
+        System.out.println("4. Clear Basket");
+        System.out.println("5. Search Products");
+        // Further customer options can be added here
+    }
+
+    public void viewProducts() {
+        List<Product> products = readProducts();
+        Collections.sort(products, Comparator.comparingDouble(Product::getRetailPrice));
+        for (Product p : products) {
+            System.out.println(p.displayWithoutCost());
+        }
+    }
+
+    public void addToBasket(Product product) {
+        basket.addItem(product);
+    }
+
+    public void viewBasketContents() {
+        basket.viewItems();
+    }
+
+    public void clearBasket() {
+        basket.clearBasket();
+    }
+
+    public void searchProducts(String searchCriteria, String value) {
+        // This method would be implemented according to search requirements
+    }
+
+    private List<Product> readProducts() {
+        List<Product> products = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("Stock.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                products.add(Product.fromString(line));
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading the file.");
+        }
+        return products;
+    }
+}

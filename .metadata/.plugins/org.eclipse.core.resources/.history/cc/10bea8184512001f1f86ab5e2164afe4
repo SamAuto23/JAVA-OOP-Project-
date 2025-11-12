@@ -1,0 +1,42 @@
+package Shop;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Optional;
+
+public class StockManager {
+    private List<Product> stock = new ArrayList<>();
+
+    public StockManager() {
+        loadProducts();
+    }
+
+    public void loadProducts() {
+        stock = FileManager.readStock("Stock.txt");
+    }
+
+    public void saveProducts() {
+        FileManager.writeStock(stock, "Stock.txt");
+    }
+
+    public boolean isAvailable(int barcode, int quantity) {
+        return stock.stream()
+                    .anyMatch(p -> p.getBarcode() == barcode && p.getQuantityInStock() >= quantity);
+    }
+
+    public void updateStock(int barcode, int quantity) {
+        Optional<Product> product = stock.stream()
+                                         .filter(p -> p.getBarcode() == barcode)
+                                         .findFirst();
+        if (product.isPresent()) {
+            int newQuantity = product.get().getQuantityInStock() - quantity;
+            if (newQuantity >= 0) {
+                product.get().setQuantityInStock(newQuantity);
+            } else {
+                System.out.println("Insufficient stock for product.");
+            }
+        } else {
+            System.out.println("Product not found.");
+        }
+        saveProducts();
+    }
+}

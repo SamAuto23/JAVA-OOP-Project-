@@ -1,0 +1,122 @@
+package Shop;
+
+public abstract class Product {
+    private int barcode;
+    private String brand;
+    private String color;
+    private ConnectivityType connectivity;
+    private int quantityInStock;
+    private double originalCost;
+    private double retailPrice;
+    private ProductCategory category;
+
+    public Product(int barcode, String brand, String color, ConnectivityType connectivity,
+                   int quantityInStock, double originalCost, double retailPrice, ProductCategory category) {
+        this.barcode = barcode;
+        this.brand = brand;
+        this.color = color;
+        this.connectivity = connectivity;
+        this.quantityInStock = quantityInStock;
+        this.originalCost = originalCost;
+        this.retailPrice = retailPrice;
+        this.category = category;
+    }
+
+    // Getters and Setters
+    public int getBarcode() {
+        return barcode;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public ConnectivityType getConnectivity() {
+        return connectivity;
+    }
+
+    public int getQuantityInStock() {
+        return quantityInStock;
+    }
+
+    public void setQuantityInStock(int quantityInStock) {
+        this.quantityInStock = quantityInStock;
+    }
+
+    public double getOriginalCost() {
+        return originalCost;
+    }
+
+    public double getRetailPrice() {
+        return retailPrice;
+    }
+
+    public ProductCategory getCategory() {
+        return category;
+    }
+
+    // Abstract method to be implemented by subclasses for displaying product information excluding cost
+    public abstract String displayWithoutCost();
+
+    // Custom methods for converting strings to enums
+    private static ProductCategory parseProductCategory(String category) {
+        switch (category.toUpperCase()) {
+            case "KEYBOARD":
+                return ProductCategory.KEYBOARD;
+            case "MOUSE":
+                return ProductCategory.MOUSE;
+            default:
+                throw new IllegalArgumentException("Invalid product category: " + category);
+        }
+    }
+
+    private static ConnectivityType parseConnectivityType(String connectivity) {
+        switch (connectivity.toUpperCase()) {
+            case "WIRED":
+                return ConnectivityType.WIRED;
+            case "WIRELESS":
+                return ConnectivityType.WIRELESS;
+            default:
+                throw new IllegalArgumentException("Invalid connectivity type: " + connectivity);
+        }
+    }
+
+    public static Product fromString(String line) throws IllegalArgumentException {
+        try {
+            String[] parts = line.split(", ");
+            if (parts.length < 10) {
+                throw new IllegalArgumentException("Insufficient data to parse product.");
+            }
+            int barcode = Integer.parseInt(parts[0]);
+            ProductCategory category = parseProductCategory(parts[1]);
+            String type = parts[2].trim();
+            String brand = parts[3];
+            String color = parts[4];
+            ConnectivityType connectivity = parseConnectivityType(parts[5]);
+            int quantity = Integer.parseInt(parts[6]);
+            double originalCost = Double.parseDouble(parts[7]);
+            double retailPrice = Double.parseDouble(parts[8]);
+            String additionalInfo = parts[9];  // Layout for keyboards or number of buttons for mice
+
+            switch (category) {
+                case KEYBOARD:
+                    Layout layout = Layout.valueOf(additionalInfo.toUpperCase());
+                    return new Keyboard(barcode, brand, color, connectivity, quantity, originalCost, retailPrice, category, layout);
+                case MOUSE:
+                    int buttons = Integer.parseInt(additionalInfo);
+                    return new Mouse(barcode, brand, color, connectivity, quantity, originalCost, retailPrice, category, buttons, type);
+                default:
+                    throw new IllegalArgumentException("Invalid product category");
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error parsing product details: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public abstract String toString();
+}

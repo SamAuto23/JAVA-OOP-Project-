@@ -1,0 +1,189 @@
+package Shop;
+
+import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class Main {
+    private static List<User> users = new ArrayList<>();
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        loadUsers();
+        boolean systemRunning = true;
+
+        while (systemRunning) {
+            User loggedInUser = selectUser();
+            loggedInUser.displayOptions();
+
+            boolean userSession = true;
+            while (userSession) {
+                System.out.println("Enter an option number:");
+                int option = getValidIntInput();
+
+                if (loggedInUser instanceof Admin) {
+                    userSession = handleAdminActions((Admin) loggedInUser, option);
+                } else if (loggedInUser instanceof Customer) {
+                    userSession = handleCustomerActions((Customer) loggedInUser, option);
+                }
+
+                if (userSession) {
+                    System.out.println("Do you want to continue with the current user? (yes/no)");
+                    if (!getValidYesNoInput()) {
+                        userSession = false;
+                    }
+                }
+            }
+
+            System.out.println("Do you want to switch users or exit? (switch/exit)");
+            String control = getValidSwitchExitInput();
+            if (control.equalsIgnoreCase("exit")) {
+                systemRunning = false;
+            }
+        }
+
+        scanner.close();
+    }
+
+    private static void loadUsers() {
+        try (BufferedReader br = new BufferedReader(new FileReader("UserAccounts.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(", ");
+                Address address = new Address(parts[3], parts[4], parts[5]);
+                if (parts[6].trim().equals("admin")) {
+                    users.add(new Admin(parts[0], parts[1], parts[2], address, parts[6].trim()));
+                } else if (parts[6].trim().equals("customer")) {
+                    users.add(new Customer(parts[0], parts[1], parts[2], address, parts[6].trim()));
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading the user accounts file.");
+        }
+    }
+
+    private static User selectUser() {
+        System.out.println("Please select a user by number:");
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            System.out.println((i + 1) + ": " + user.getUsername() + " (" + user.getRole() + ")");
+        }
+        int userChoice = getValidIntInput() - 1;
+        if (userChoice >= 0 && userChoice < users.size()) {
+            return users.get(userChoice);
+        } else {
+            System.out.println("Invalid selection, defaulting to first user.");
+            return users.get(0);
+        }
+    }
+
+    private static boolean handleAdminActions(Admin admin, int option) {
+        switch (option) {
+            case 1:
+                admin.viewProducts();
+                return true;
+            case 2:
+                System.out.println("Enter product details (barcode, category, device type, brand, color, connectivity, quantity in stock, original cost, retail price, additional info):");
+                String productDetails = scanner.nextLine();
+                try {
+                    Product product = Product.fromString(productDetails);
+                    admin.addProduct(product);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Failed to add product: " + e.getMessage());
+                }
+                return true;
+            default:
+                System.out.println("Invalid option selected.");
+                return true;
+        }
+    }
+
+    private static boolean handleCustomerActions(Customer customer, int option) {
+        switch (option) {
+            case 1:
+                customer.viewProducts();
+                return true;
+            case 2:
+                System.out.println("Enter product barcode to add to basket:");
+                String barcode = scanner.nextLine();
+                customer.addToBasket(barcode);
+                return true;
+            case 3:
+                customer.viewBasket();
+                return true;
+            case 4:
+                customer.cancelBasket();
+                return true;
+            case 5:
+                System.out.println("Enter search criteria (barcode or mouse_buttons) and value:");
+                String criteria = scanner.nextLine();
+                String value = scanner.nextLine();
+                List<Product> results = customer.searchProducts(criteria, value);
+                for (Product p : results) {
+                    System.out.println(p.displayWithoutCost());
+                }
+                return true;
+            case 6:
+                if (customer.getBasket().isEmpty()) {
+                    System.out.println("The shopping basket is empty.");
+                } else {
+                    System.out.println("Choose payment method (paypal/creditcard):");
+                    String paymentMethod = scanner.nextLine();
+                    if (paymentMethod.equalsIgnoreCase("paypal")) {
+                        System.out.println("Enter PayPal email:");
+                        String email = scanner.nextLine();
+                        customer.pay(new PayPalPayment(email));
+                    } else if (paymentMethod.equalsIgnoreCase("creditcard")) {
+                        System.out.println("Enter credit card number (6 digits):");
+                        String cardNumber = scanner.nextLine();
+                        System.out.println("Enter security code (3 digits):");
+                        String securityCode = scanner.nextLine();
+                        customer.pay(new CreditCardPayment(cardNumber, securityCode));
+                    } else {
+                        System.out.println("Invalid payment method.");
+                    }
+                }
+                return true;
+            default:
+                System.out.println("Invalid option selected.");
+                return true;
+        }
+    }
+
+    private static int getValidIntInput() {
+        while (true) {
+            try {
+                return Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+            }
+        }
+    }
+
+    private static boolean getValidYesNoInput() {
+        while (true) {
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("yes")) {
+                return true;
+            } else if (input.equalsIgnoreCase("no")) {
+                return false;
+            } else {
+                System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+            }
+        }
+    }
+
+    private static String getValidSwitchExitInput() {
+        while (true) {
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("switch") || input.equalsIgnoreCase("exit")) {
+                return input;
+            } else {
+                System.out.println("Invalid input. Please enter 'switch' or 'exit'.");
+            }
+        }
+    }
+}

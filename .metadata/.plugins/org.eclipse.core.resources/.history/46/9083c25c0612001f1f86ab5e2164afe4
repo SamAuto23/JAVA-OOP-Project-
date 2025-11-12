@@ -1,0 +1,9 @@
+package Shop;
+
+
+public enum KeboardType {
+	STANDARD,
+	FLEXIBLE,
+	GAMING
+
+}

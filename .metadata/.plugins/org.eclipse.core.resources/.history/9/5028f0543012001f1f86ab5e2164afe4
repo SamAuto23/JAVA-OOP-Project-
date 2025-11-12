@@ -1,0 +1,57 @@
+package Shop;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+public class Admin extends User {
+    private List<Product> stock = new ArrayList<>();
+
+    public Admin(String userId, String username, String name, Address address, String role) {
+        super(userId, username, name, address, role);
+        loadStock();
+    }
+
+    private void loadStock() {
+        try (BufferedReader br = new BufferedReader(new FileReader("Stock.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                Product product = Product.fromString(line);
+                stock.add(product);
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading the stock file.");
+        }
+    }
+
+    private void saveStock() {
+        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("Stock.txt")))) {
+            for (Product product : stock) {
+                out.println(product);
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to the stock file.");
+        }
+    }
+
+    public void addProduct(Product product) {
+        for (Product p : stock) {
+            if (p.getBarcode() == product.getBarcode()) {
+                System.out.println("Product with barcode " + product.getBarcode() + " already exists.");
+                return;
+            }
+        }
+        stock.add(product);
+        saveStock();
+        System.out.println("Added product: " + product);
+    }
+
+    public void viewProducts() {
+        Collections.sort(stock, Comparator.comparingDouble(Product::getRetailPrice));
+        for (Product p : stock) {
+            System.out.println(p);
+        }
+    }
+}

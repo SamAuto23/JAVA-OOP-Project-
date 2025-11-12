@@ -1,0 +1,125 @@
+package Shop;
+import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class Main {
+    private static List<User> users = new ArrayList<>();
+
+    public static void main(String[] args) {
+        // Load users from file
+        loadUsers();
+
+        // Scanner for user input
+        Scanner scanner = new Scanner(System.in);
+
+        // Display users and allow selection
+        User loggedInUser = selectUser(scanner);
+
+        // Show options based on user type
+        loggedInUser.displayOptions();
+
+        // Handle user actions
+        boolean exit = false;
+        while (!exit) {
+            System.out.println("Enter an option number:");
+            int option = scanner.nextInt();
+            scanner.nextLine();  // Consume newline left-over
+
+            if (loggedInUser instanceof Admin) {
+                handleAdminActions((Admin) loggedInUser, option, scanner);
+            } else if (loggedInUser instanceof Customer) {
+                handleCustomerActions((Customer) loggedInUser, option, scanner);
+            }
+
+            System.out.println("Do you want to continue? (yes/no)");
+            String response = scanner.nextLine();
+            if (response.equalsIgnoreCase("no")) {
+                exit = true;
+            }
+        }
+
+        scanner.close();
+    }
+
+    private static void loadUsers() {
+        try (BufferedReader br = new BufferedReader(new FileReader("UserAccounts.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(", ");
+                if (parts[6].trim().equals("admin")) {
+                    users.add(new Admin(parts[0], parts[1], parts[2], parts[3] ,parts[4], parts[5], parts[6]));
+                } else if (parts[6].trim().equals("customer")) {
+                    users.add(new Customer(parts[0], parts[1], parts[2], parts[3],parts[4], parts[5], parts[6]));
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading the user accounts file.");
+        }
+    }
+
+    private static User selectUser(Scanner scanner) {
+        System.out.println("Please select a user by number:");
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            System.out.println((i + 1) + ": " + user.username + " (" + user.role + ")");
+        }
+        int userChoice = scanner.nextInt() - 1;
+        scanner.nextLine(); // Consume newline left-over
+        if (userChoice >= 0 && userChoice < users.size()) {
+            return users.get(userChoice);
+        } else {
+            System.out.println("Invalid selection, defaulting to first user.");
+            return users.get(0);
+        }
+    }
+
+    private static void handleAdminActions(Admin admin, int option, Scanner scanner) {
+        switch (option) {
+            case 1:
+                admin.viewProducts();
+                break;
+            case 2:
+                System.out.println("Enter product details (barcode, category, device type, brand, color, connectivity, quantity in stock, original cost, retail price, additional info):");
+                String productDetails = scanner.nextLine();
+                Product product = Product.fromString(productDetails);
+                admin.addProduct(product);
+                break;
+            default:
+                System.out.println("Invalid option selected.");
+                break;
+        }
+    }
+
+    private static void handleCustomerActions(Customer customer, int option, Scanner scanner) {
+        switch (option) {
+            case 1:
+                customer.viewProducts();
+                break;
+            case 2:
+                System.out.println("Enter product barcode to add to basket:");
+                String barcode = scanner.nextLine();
+                customer.addToBasket(barcode);
+                break;
+            case 3:
+                customer.cancelBasket();
+                System.out.println("Basket has been canceled.");
+                break;
+            case 4:
+                System.out.println("Enter search criteria (barcode or mouse_buttons) and value:");
+                String criteria = scanner.nextLine();
+                String value = scanner.nextLine();
+                List<Product> results = customer.searchProducts(criteria, value);
+                for (Product p : results) {
+                    System.out.println(p.displayWithoutCost());
+                }
+                break;
+            default:
+                System.out.println("Invalid option selected.");
+                break;
+        }
+    }
+}

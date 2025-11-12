@@ -1,0 +1,18 @@
+package Shop;
+
+import java.util.Date;
+
+public class PayPalPayment implements PaymentMethod {
+    private String email;
+
+    public PayPalPayment(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public Receipt processPayment(double amount, Address fullAddress) {
+        Date today = new Date();
+        String paymentDetails = "PayPal Email: " + email;
+        return new Receipt(amount, paymentDetails, today, fullAddress.toString());
+    }
+}

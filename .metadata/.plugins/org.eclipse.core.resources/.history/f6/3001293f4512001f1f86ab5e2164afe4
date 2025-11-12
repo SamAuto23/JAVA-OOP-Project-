@@ -1,0 +1,25 @@
+package Shop;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class Receipt {
+    private double amountPaid;
+    private String paymentMethodDetails;
+    private Date paymentDate;
+    private String fullAddress;
+
+    public Receipt(double amountPaid, String paymentMethodDetails, Date paymentDate, String fullAddress) {
+        this.amountPaid = amountPaid;
+        this.paymentMethodDetails = paymentMethodDetails;
+        this.paymentDate = paymentDate;
+        this.fullAddress = fullAddress;
+    }
+
+    @Override
+    public String toString() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return String.format("Receipt:\nAmount Paid: %.2f\nPayment Method: %s\nDate: %s\nDelivery Address: %s",
+                amountPaid, paymentMethodDetails, dateFormat.format(paymentDate), fullAddress);
+    }
+}

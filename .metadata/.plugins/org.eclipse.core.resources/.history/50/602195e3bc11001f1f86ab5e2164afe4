@@ -1,0 +1,82 @@
+package Shop;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ShoppingBasket {
+    private List<Product> items;
+
+    public ShoppingBasket() {
+        this.items = new ArrayList<>();
+    }
+
+    // Adds a product to the shopping basket or increases quantity if already present
+    public void addItem(Product product) {
+        // Check if the product is out of stock before adding
+        if (product.getQuantityInStock() <= 0) {
+            System.out.println("Product is out of stock.");
+            return;
+        }
+
+        // Check if the product already exists in the basket
+        for (Product item : items) {
+            if (item.getBarcode() == product.getBarcode()) {
+                // Increase quantity in the basket by 1, assuming each call to addItem increases quantity by 1
+                item.setQuantityInStock(item.getQuantityInStock() + 1);
+                System.out.println("Increased quantity of: " + product + " to " + item.getQuantityInStock());
+                return;
+            }
+        }
+
+        // If product does not exist in the basket, add it with a quantity of 1
+        product.setQuantityInStock(1); // Set initial quantity in basket to 1
+        items.add(product);
+        System.out.println("Added: " + product + " to the basket with initial quantity 1.");
+    }
+
+    // Increases the quantity of a product in the basket
+    public void increaseQuantity(int barcode) {
+        for (Product item : items) {
+            if (item.getBarcode() == barcode) {
+                item.setQuantityInStock(item.getQuantityInStock() + 1);
+                System.out.println("Increased quantity of: " + item + " to " + item.getQuantityInStock());
+                return;
+            }
+        }
+        System.out.println("Product with barcode " + barcode + " not found in the basket.");
+    }
+
+    // Removes a product from the basket
+    public void removeItem(int barcode) {
+        Product toRemove = null;
+        for (Product item : items) {
+            if (item.getBarcode() == barcode) {
+                toRemove = item;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            items.remove(toRemove);
+            System.out.println("Removed: " + toRemove + " from the basket.");
+        } else {
+            System.out.println("Product with barcode " + barcode + " not found in the basket.");
+        }
+    }
+
+    // Displays all items in the shopping basket
+    public void viewItems() {
+        if (items.isEmpty()) {
+            System.out.println("Your shopping basket is empty.");
+        } else {
+            System.out.println("Shopping Basket Contents:");
+            for (Product product : items) {
+                System.out.println(product + " Quantity: " + product.getQuantityInStock());
+            }
+        }
+    }
+
+    // Clears all the items in the shopping basket
+    public void clearBasket() {
+        items.clear();
+        System.out.println("Your shopping basket has been emptied.");
+    }
+}

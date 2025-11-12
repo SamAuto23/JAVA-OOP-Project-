@@ -1,0 +1,13 @@
+package Shop;
+public enum ProductCategory {
+    MOUSE,
+    KEYBOARD;
+
+    public static ProductCategory[] values() {
+        return values();
+    }
+
+    public static ProductCategory valueOf(String name) {
+        return Enum.valueOf(ProductCategory.class, name);
+    }
+}

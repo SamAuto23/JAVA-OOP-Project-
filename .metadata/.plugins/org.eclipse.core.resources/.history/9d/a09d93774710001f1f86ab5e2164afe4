@@ -1,0 +1,39 @@
+package Shop;
+
+
+
+public abstract class User {
+    private String userId;
+    private String username;
+    private String name;
+    private Address Useraddress;
+    private String role;
+
+    public User(String userId, String username, String name, Address Useraddress, String role) {
+        this.userId = userId;
+        this.username = username;
+        this.name = name;
+        this.Useraddress = Useraddress;
+        this.role = role;
+    }
+
+    public Address getUseraddress() {
+        return Useraddress;
+    }
+    public String getuserId() {
+		return userId;
+	}
+	public String getusername() {
+		return username;
+	}
+	public String getname() {
+		return name;
+		
+	}		
+    abstract public void displayOptions();
+
+
+	public abstract String toString();
+	
+
+	}

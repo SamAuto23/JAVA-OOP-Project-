@@ -1,0 +1,74 @@
+package Shop;
+
+import java.util.Map;
+import java.util.HashMap;
+
+public class ShoppingBasket {
+    private Map<Product, Integer> items;
+    private StockManager stockManager;
+
+    public ShoppingBasket() {
+        this.items = new HashMap<>();
+        this.stockManager = StockManager.getInstance();
+    }
+
+    public void addItem(Product product) {
+        int currentStock = stockManager.getStockQuantity(product);
+        int basketQuantity = items.getOrDefault(product, 0);
+
+        if (basketQuantity >= currentStock) {
+            System.out.println("This product is currently out of stock so we can't add it to the basket.");
+            return;
+        }
+
+        items.putIfAbsent(product, 0);
+        items.computeIfPresent(product, (key, quantity) -> quantity + 1);
+        stockManager.reduceStock(product, 1);  // Reduce stock by 1
+        System.out.println("Added/increased quantity of: " + product.getBrand() + " to " + items.get(product));
+    }
+
+    public void removeItem(Product product) {
+        if (items.containsKey(product) && items.get(product) > 1) {
+            items.computeIfPresent(product, (key, quantity) -> quantity - 1);
+            stockManager.increaseStock(product, 1);  // Increase stock by 1
+            System.out.println("Decreased quantity of: " + product.getBrand());
+        } else if (items.containsKey(product)) {
+            items.remove(product);
+            stockManager.increaseStock(product, 1);  // Increase stock by 1
+            System.out.println("Removed: " + product.getBrand() + " from the basket.");
+        } else {
+            System.out.println("Product not found in the basket.");
+        }
+    }
+
+    public void viewItems() {
+        if (items.isEmpty()) {
+            System.out.println("Your shopping basket is empty.");
+        } else {
+            System.out.println("Shopping Basket Contents:");
+            items.forEach((product, quantity) -> {
+                System.out.println(product.displayWithoutCost() + ", Quantity: " + quantity);
+            });
+        }
+    }
+
+    public void clearBasket() {
+        items.forEach((product, quantity) -> stockManager.increaseStock(product, quantity));
+        items.clear();
+        System.out.println("Your shopping basket has been emptied.");
+    }
+
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+
+    public double getTotalAmount() {
+        return items.entrySet().stream()
+                    .mapToDouble(entry -> entry.getKey().getRetailPrice() * entry.getValue())
+                    .sum();
+    }
+
+    public Map<Product, Integer> getItems() {
+        return items;
+    }
+}

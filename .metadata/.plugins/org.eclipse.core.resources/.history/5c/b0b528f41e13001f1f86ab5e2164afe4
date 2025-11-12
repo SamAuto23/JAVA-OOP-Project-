@@ -1,0 +1,47 @@
+package Shop;
+
+import java.io.*;
+import java.util.List;
+import java.util.ArrayList;
+
+public class FileManager {
+
+    public static List<User> readUsers(String filename) {
+        List<User> users = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                users.add(User.fromString(line)); // Assumes a static method in User that can parse User details
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading users: " + e.getMessage());
+        }
+        return users;
+    }
+
+    public static List<Product> readStock(String filename) {
+        List<Product> stock = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println("Reading line: " + line); // Debugging line
+                stock.add(Product.fromString(line)); // Assumes a static method in Product that can parse Product details
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading stock: " + e.getMessage());
+        }
+        return stock;
+    }
+
+    public static void writeStock(List<Product> stock, String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            for (Product product : stock) {
+                writer.write(product.toString());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing stock: " + e.getMessage());
+        }
+    }
+}
+

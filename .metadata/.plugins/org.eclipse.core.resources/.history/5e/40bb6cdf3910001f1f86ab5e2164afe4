@@ -1,0 +1,19 @@
+package Shop;
+
+public abstract class User {
+    protected String userId;
+    protected String username;
+    protected String name;
+    protected String address;
+    protected String role;
+
+    public User(String userId, String username, String name, String address, String role) {
+        this.userId = userId;
+        this.username = username;
+        this.name = name;
+        this.address = address;
+        this.role = role;
+    }
+
+    abstract public void displayOptions();
+}

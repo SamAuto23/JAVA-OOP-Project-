@@ -1,0 +1,44 @@
+package Shop;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Optional;
+
+public class StockManager {
+    private List<Product> stock = new ArrayList<>();
+
+    public StockManager() {
+        loadProducts();
+    }
+
+    public void loadProducts() {
+        stock = FileManager.readStock("Stock.txt");
+    }
+
+    public void saveProducts() {
+        FileManager.writeStock(stock, "Stock.txt");
+    }
+
+    public List<Product> getStock() {
+        return stock;
+    }
+
+    public boolean isAvailable(int barcode, int quantity) {
+        return stock.stream()
+                    .anyMatch(p -> p.getBarcode() == barcode && p.getQuantityInStock() >= quantity);
+    }
+
+    public void updateStock(Map<Product, Integer> items) {
+        for (Map.Entry<Product, Integer> entry : items.entrySet()) {
+            Product product = entry.getKey();
+            int quantity = entry.getValue();
+            Optional<Product> stockProduct = stock.stream()
+                                                  .filter(p -> p.getBarcode() == product.getBarcode())
+                                                  .findFirst();
+            if (stockProduct.isPresent()) {
+                stockProduct.get().setQuantityInStock(stockProduct.get().getQuantityInStock() - quantity);
+            }
+        }
+        saveProducts();
+    }
+}

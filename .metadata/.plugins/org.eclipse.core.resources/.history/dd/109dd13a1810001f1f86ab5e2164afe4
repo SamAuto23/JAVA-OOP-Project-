@@ -1,0 +1,36 @@
+package Shop;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ShoppingBasket {
+    private List<Product> items;
+
+    public ShoppingBasket() {
+        this.items = new ArrayList<>();
+    }
+
+    // Adds a product to the shopping basket
+    public void addItem(Product product) {
+        items.add(product);
+        System.out.println("Added: " + product + " to the basket.");
+    }
+
+    // Displays all items in the shopping basket
+    public void viewItems() {
+        if (items.isEmpty()) {
+            System.out.println("Your shopping basket is empty.");
+        } else {
+            System.out.println("Shopping Basket Contents:");
+            for (Product product : items) {
+                System.out.println(product);
+            }
+        }
+    }
+
+    // Clears all the items in the shopping basket
+    public void clearBasket() {
+        items.clear();
+        System.out.println("Your shopping basket has been emptied.");
+    }
+}

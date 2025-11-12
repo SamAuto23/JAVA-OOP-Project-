@@ -1,0 +1,20 @@
+package Shop;
+
+import java.util.Date;
+
+public class CreditCardPayment implements PaymentMethod {
+    private String cardNumber;
+    private String securityCode;
+
+    public CreditCardPayment(String cardNumber, String securityCode) {
+        this.cardNumber = cardNumber;
+        this.securityCode = securityCode;
+    }
+
+    @Override
+    public Receipt processPayment(double amount, Address fullAddress) {
+        Date today = new Date();
+        String paymentDetails = "Credit Card Number: " + cardNumber;
+        return new Receipt(amount, paymentDetails, today, fullAddress.toString());
+    }
+}

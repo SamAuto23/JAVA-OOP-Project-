@@ -1,0 +1,16 @@
+package Shop;
+
+import java.util.Date;
+
+public class Receipt {
+    private String details;
+
+    public Receipt(String details) {
+        this.details = details;
+    }
+
+    @Override
+    public String toString() {
+        return details;
+    }
+}

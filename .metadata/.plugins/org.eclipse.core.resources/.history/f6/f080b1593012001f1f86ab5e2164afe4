@@ -1,0 +1,45 @@
+package Shop;
+
+public class Mouse extends Product {
+    private MouseType type;
+    private int numberOfButtons;
+
+    public Mouse(int barcode, String brand, String color, ConnectivityType connectivity,
+                 int quantityInStock, double originalCost, double retailPrice,
+                 ProductCategory category, int numberOfButtons, String type) {
+        super(barcode, brand, color, connectivity, quantityInStock, originalCost, retailPrice, category);
+        this.numberOfButtons = numberOfButtons;
+        this.type = MouseType.valueOf(type.toUpperCase());
+    }
+
+    @Override
+    public String displayWithoutCost() {
+        return String.format("%d, %s, %s, %s, %s, %s, %d, %.2f, %.2f, %d",
+                getBarcode(), getCategory().toString().toLowerCase(), type.toString().toLowerCase(), getBrand(), getColor(), getConnectivity().toString().toLowerCase(),
+                getQuantityInStock(), getRetailPrice(), getRetailPrice(), numberOfButtons);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d, %s, %s, %s, %s, %s, %d, %.2f, %.2f, %d",
+                getBarcode(), getCategory().toString().toLowerCase(), type.toString().toLowerCase(), getBrand(), getColor(), getConnectivity().toString().toLowerCase(),
+                getQuantityInStock(), getOriginalCost(), getRetailPrice(), numberOfButtons);
+    }
+
+    // Getters and setters
+    public MouseType getType() {
+        return type;
+    }
+
+    public void setType(MouseType type) {
+        this.type = type;
+    }
+
+    public int getNumberOfButtons() {
+        return numberOfButtons;
+    }
+
+    public void setNumberOfButtons(int numberOfButtons) {
+        this.numberOfButtons = numberOfButtons;
+    }
+}

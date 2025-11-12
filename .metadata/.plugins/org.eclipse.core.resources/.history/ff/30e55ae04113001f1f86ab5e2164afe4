@@ -1,0 +1,118 @@
+package Shop;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class Customer extends User {
+    private ShoppingBasket basket;
+
+    public Customer(String userId, String username, String name, Address address, String role) {
+        super(userId, username, name, address, role);
+        this.basket = new ShoppingBasket();
+    }
+
+    @Override
+    public void displayOptions() {
+        System.out.println("Customer Options:");
+        System.out.println("1. View Products");
+        System.out.println("2. Add Product to Basket");
+        System.out.println("3. View Basket");
+        System.out.println("4. Cancel Basket");
+        System.out.println("5. Search Products");
+        System.out.println("6. Make Payment");
+        // Additional customer options can be added here
+    }
+
+    public void viewProducts() {
+        List<Product> products = readProducts();
+        products.sort(Comparator.comparingDouble(Product::getRetailPrice));
+        for (Product product : products) {
+            System.out.println(product.displayWithoutCost());
+        }
+    }
+
+    public void addToBasket(String barcode) {
+        List<Product> products = readProducts();
+        Optional<Product> product = products.stream()
+            .filter(p -> Integer.toString(p.getBarcode()).equals(barcode))
+            .findFirst();
+
+        if (product.isPresent()) {
+            if (product.get().getQuantityInStock() > 0) {
+                basket.addItem(product.get());  // Default adding one item to basket
+                System.out.println("Added " + product.get().getBrand() + " to your basket.");
+            } else {
+                System.out.println("This product is out of stock.");
+            }
+        } else {
+            System.out.println("Product not found.");
+        }
+    }
+
+    public void viewBasket() {
+        basket.viewItems();
+    }
+
+    public void cancelBasket() {
+        basket.clearBasket();
+        System.out.println("Basket has been canceled.");
+    }
+
+    public List<Product> searchProducts(String criteria, String value) {
+        List<Product> products = readProducts();
+        List<Product> filteredProducts = new ArrayList<>();
+        switch (criteria.toLowerCase()) {
+            case "barcode":
+                filteredProducts = products.stream()
+                    .filter(p -> Integer.toString(p.getBarcode()).equals(value))
+                    .collect(Collectors.toList());
+                break;
+            case "mouse_buttons":
+                filteredProducts = products.stream()
+                    .filter(p -> p instanceof Mouse && Integer.toString(((Mouse) p).getNumberOfButtons()).equals(value))
+                    .collect(Collectors.toList());
+                break;
+            default:
+                System.out.println("Invalid search criteria.");
+                break;
+        }
+        return filteredProducts;
+    }
+
+    public ShoppingBasket getBasket() {
+        return basket;
+    }
+
+    public void pay(PaymentMethod paymentMethod) {
+        double amount = basket.getTotalAmount();
+        Address fullAddress = getAddress();
+        Receipt receipt = paymentMethod.processPayment(amount, fullAddress);
+        System.out.println(receipt);
+        StockManager stockManager = StockManager.getInstance();
+        stockManager.updateStock(basket.getItems());
+        basket.clearBasket();
+    }
+
+    private List<Product> readProducts() {
+        List<Product> products = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("Stock.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                try {
+                    products.add(Product.fromString(line));
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Error parsing product: " + e.getMessage());
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading the file.");
+        }
+        return products;
+    }
+}

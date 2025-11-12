@@ -1,0 +1,13 @@
+package Shop;
+public enum ConnectivityType {
+    WIRED,
+    WIRELESS;
+
+    public static ConnectivityType[] values() {
+        return values();
+    }
+
+    public static ConnectivityType valueOf(String name) {
+        return Enum.valueOf(ConnectivityType.class, name);
+    }
+}

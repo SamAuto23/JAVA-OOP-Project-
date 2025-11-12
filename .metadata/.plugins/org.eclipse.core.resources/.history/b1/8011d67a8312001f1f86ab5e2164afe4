@@ -1,0 +1,35 @@
+package Shop;
+
+public class Mouse extends Product {
+    private MouseType type;
+    private int numberOfButtons;
+
+    public Mouse(int barcode, String brand, String color, ConnectivityType connectivity, int quantityInStock,
+                 double originalCost, double retailPrice, ProductCategory category, int numberOfButtons, MouseType type) {
+        super(barcode, brand, color, connectivity, quantityInStock, originalCost, retailPrice, category);
+        this.numberOfButtons = numberOfButtons;
+        this.type = type;
+    }
+
+    @Override
+    public String displayWithoutCost() {
+        return String.format("Mouse - Barcode: %d, Type: %s, Number of Buttons: %d, Brand: %s, Color: %s, Connectivity: %s, Retail Price: %.2f",
+                getBarcode(), type, numberOfButtons, getBrand(), getColor(), getConnectivity(), getRetailPrice());
+    }
+
+    public MouseType getType() {
+        return type;
+    }
+
+    public void setType(MouseType type) {
+        this.type = type;
+    }
+
+    public int getNumberOfButtons() {
+        return numberOfButtons;
+    }
+
+    public void setNumberOfButtons(int numberOfButtons) {
+        this.numberOfButtons = numberOfButtons;
+    }
+}

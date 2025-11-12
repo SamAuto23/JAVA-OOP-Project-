@@ -1,0 +1,23 @@
+package Shop;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class CreditCardPayment implements PaymentMethod {
+    private String cardNumber;
+    private String securityCode;
+
+    public CreditCardPayment(String cardNumber, String securityCode) {
+        this.cardNumber = cardNumber;
+        this.securityCode = securityCode;
+    }
+
+    @Override
+    public Receipt processPayment(double amount, Address fullAddress) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String today = sdf.format(new Date());
+        String details = String.format("%.2f paid by Credit Card using %s on %s, and the delivery address is %s",
+                                       amount, cardNumber, today, fullAddress.toString());
+        return new Receipt(details);
+    }
+}

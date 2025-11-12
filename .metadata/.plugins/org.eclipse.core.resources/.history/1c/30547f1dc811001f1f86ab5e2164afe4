@@ -1,0 +1,36 @@
+package Shop;
+
+public class Mouse extends Product {
+    // Additional attribute for mice
+    private MouseType type;
+    private int numberOfButtons;
+    
+    // Constructor for mice
+    public Mouse(String barcode, String category, String deviceType, String brand, String color,
+                 String connectivity, int quantityInStock, double originalCost, double retailPrice,
+                 String additionalInformation, int numberOfButtons, MouseType type) {
+        super(barcode, category, deviceType, brand, color, connectivity, quantityInStock,
+              originalCost, retailPrice, additionalInformation);
+        this.numberOfButtons = numberOfButtons;
+        this.type = type;
+    }
+    
+    // Getter and setter for type
+    public MouseType getType() {
+        return type;
+    }
+    
+    public void setType(MouseType type) {
+        this.type = type;
+    }
+    
+    // Getter and setter for numberOfButtons
+    public int getNumberOfButtons() {
+        return numberOfButtons;
+    }
+    
+    public void setNumberOfButtons(int numberOfButtons) {
+        this.numberOfButtons = numberOfButtons;
+    }
+}
+
