@@ -54,6 +54,7 @@ The following diagram illustrates the high-level architecture and object-oriente
    git clone https://github.com/SamAuto23/JAVA-OOP-Project-.git
 
 2.Open the project in Eclipse (or your preferred IDE).
+---
 3.Build and run the main class.
 
 📈 Learning Outcomes
