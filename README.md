@@ -7,9 +7,11 @@ It demonstrates key OOP principles — **encapsulation, inheritance, polymorphis
 
 ## 🚀 Overview
 This project implements a Java Object-Oriented Shopping System that models the structure and interactions of a real-world e-commerce platform.
+
 The system allows users to browse products, add items to a shopping basket, and complete purchases using various payment methods.
 
 Key entities include Users, Products, Shopping Baskets, Orders, and Payment types (e.g. PayPal and CreditCard). Each class demonstrates object-oriented principles such as inheritance, abstraction, and polymorphism.
+
 For example, Product serves as a base class extended by specialised product types like Mouse and Keyboard, while the Payment class is abstract, implemented by concrete payment subclasses.
 
 The system design emphasises modularity, data encapsulation, and reusability, enabling easy maintenance and scalability for future extensions (e.g. adding new product categories or payment methods).
