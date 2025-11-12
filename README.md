@@ -28,8 +28,11 @@ The project simulates a small-scale system (e.g. shopping application / student 
 
 ---
 
-## 📂 Project Structure
+## 🧩 System Design — UML Class Diagram
 
+The following diagram illustrates the high-level architecture and object-oriented relationships within the Shopping System:
+
+![UML Class Diagram](ClassDiagram.jpg.jpg)
 
 
 
