@@ -32,7 +32,7 @@ The project simulates a small-scale system (e.g. shopping application / student 
 
 The following diagram illustrates the high-level architecture and object-oriented relationships within the Shopping System:
 
-![UML Class Diagram](ClassDiagram.jpg)
+![UML Class Diagram](ClassDiagram.jpg.jpg)
 
 
 
