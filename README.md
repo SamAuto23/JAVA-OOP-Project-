@@ -79,5 +79,5 @@ This project is for educational purposes only and not intended for commercial us
 
 ---
 
-Would you like me to tailor the **Overview and Features** section specifically to your actual Java project’s theme (e.g. Shopping App, Student System, etc.) so it looks even more polished?
+
 
